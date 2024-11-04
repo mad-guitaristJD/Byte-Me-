@@ -12,6 +12,7 @@ public abstract class Customer extends User{
     
     
     public abstract int getPriority();
+    public abstract void setPriority(int priority);
     
     public void viewCart(){
         int i=1;
@@ -153,7 +154,11 @@ public abstract class Customer extends User{
             System.out.println("ENTER QUANTITY");
             quantity = scanner.nextInt();
             scanner.nextLine();
-            cart.add(new Order(this, items.get(choice),  quantity));
+            String specialRequest="";
+            System.out.println("TYPE SPECIAL REQUEST\n-1 IF NONE");
+            specialRequest = scanner.nextLine();
+            if(specialRequest.equals("-1")) cart.add(new Order(this, items.get(choice),  quantity));
+            else cart.add(new Order(this, items.get(choice),  quantity, specialRequest));
         }
         System.out.println("ADDED ITEMS");
         for(Order order : cart){
@@ -227,6 +232,7 @@ public abstract class Customer extends User{
         System.out.println("-----PLACED ORDERS-----");
         for(Order order : placedOrders){
             System.out.println(i + ".ITEM: " + order.getItem().getName() + " || QUANTITY: " + order.getQuantity() + " || STATUS: " + order.getOrderStatus());
+            i++;
         }
     }
     
@@ -245,6 +251,7 @@ public abstract class Customer extends User{
                 continue;
             }
             placedOrders.get(choice).setOrderStatus("CANCELLED");
+            oldOrders.add(placedOrders.get(choice));
             System.out.println("CANCELLED");
         }
         
@@ -266,7 +273,9 @@ public abstract class Customer extends User{
         }
         int i=1, choice;
         for(Order order : oldOrders){
-            System.out.println(i + ". ITEM: " + order.getItem().getName());
+            System.out.println(i + ". ITEM: " + order.getItem().getName() + " || STATUS: " + order.getOrderStatus());
+            System.out.println("ORDERED TIME: " + order.getTimestamp());
+            i++;
         }
         System.out.println("TO RE-ORDER ENTER THE CHOICE");
         choice = scanner.nextInt();
@@ -277,8 +286,38 @@ public abstract class Customer extends User{
     }
     
     
+    public void addReview(){
+        String item = "";
+        System.out.println("ENTER ITEM NAME");
+        item = scanner.nextLine();
+        item = item.toLowerCase();
+        System.out.println("ENTER YOUR REVIEW");
+        String review = "";
+        review = scanner.nextLine();
+        if(Reviews.reviewMap.containsKey(item)){
+            Reviews.reviewMap.get(item).add(review);
+        }
+        else{
+            ArrayList<String> reviews = new ArrayList<>();
+            reviews.add(review);
+            Reviews.reviewMap.put(item, reviews);
+        }
+    }
     
-    
+    public void viewReviews(){
+        String item = "";
+        System.out.println("ENTER ITEM NAME TO SEE REVIEWS FOR");
+        item = scanner.nextLine();
+        item = item.toLowerCase();
+        if(!Reviews.reviewMap.containsKey(item)){
+            System.out.println("NO REVIEW");
+            return;
+        }
+        for(String s : Reviews.reviewMap.get(item)){
+            System.out.println(s);
+        }
+        System.out.println();
+    }
     
     
     

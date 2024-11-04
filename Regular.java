@@ -14,6 +14,10 @@ public class Regular extends Customer{
         return priority;
     }
     
+    public void setPriority(int priority){
+        this.priority=priority;
+    }
+    
     public void checkout(){
         System.out.println("ENTER PAYMENT DETAILS");
         scanner.nextLine();
@@ -24,8 +28,6 @@ public class Regular extends Customer{
         }
         cart.clear();
     }
-    
-    
     
     
     

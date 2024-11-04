@@ -105,7 +105,7 @@ public class Controller {
         int choice;
         while(true){
             System.out.println("---------------PLEASE CHOOSE---------------");
-            if(customer instanceof Regular) System.out.println("1.BROWSE MENU\n2.VIEW CART\n3.ORDER MANAGEMENT\n4.LEAVE A REVIEW\n5.----> BECOME A VIP <-----");
+            if(customer instanceof Regular) System.out.println("1.BROWSE MENU\n2.VIEW CART\n3.ORDER MANAGEMENT\n4.LEAVE A REVIEW");
             else System.out.println("1.BROWSE MENU\n2.VIEW CART\n3.TRACK ORDER\n4.LEAVE A REVIEW");
             choice = scanner.nextInt();
             scanner.nextLine();
@@ -180,6 +180,17 @@ public class Controller {
                         }
                     }
                     break;
+                case 4:
+                    while(true){
+                        System.out.println("1.PROVIDE REVIEW\n2.VIEW REVIEWS");
+                        choice = scanner.nextInt();
+                        scanner.nextLine();
+                        if(choice==-1) break;
+                        if(choice==1) customer.addReview();
+                        else if(choice==2) customer.viewReviews();
+                        else System.out.println("INVALID INPUT");
+                    }
+                    break;
                 default:
                     System.out.println("INVALID INPUT");
             }
@@ -219,12 +230,12 @@ public class Controller {
                             default:
                                 System.out.println("INVALID CHOICE");
                         }
-                        
                     }
+                    break;
                 case 2:
                     while (true) {
                         System.out.println("---------------PLEASE CHOOSE---------------");
-                        System.out.println("1.VIEW PENDING ORDERS\n2.UPDATE ORDER STATUS\n3.PROCESS REFUNDS\n4.HANDLE SPECIAL REQUESTS");
+                        System.out.println("1.VIEW PENDING ORDERS\n2.UPDATE ORDER STATUS\n3.PROCESS REFUNDS");
                         choice = scanner.nextInt();
                         scanner.nextLine();
                         if (choice == -1) break;
@@ -236,15 +247,20 @@ public class Controller {
                                 admin.updateStatus();
                                 break;
                             case 3:
-                                admin.canceledOrders();
-                                break;
-                            case 4:
-                                admin.removeItem();
+                                admin.processRefunds();
                                 break;
                             default:
                                 System.out.println("INVALID CHOICE");
                         }
                     }
+                    break;
+                case 3:
+                    admin.reportGeneration();
+                    break;
+                default:
+                    System.out.println("INVALID CHOICE");
+                    break;
+                    
             }
         }
     }

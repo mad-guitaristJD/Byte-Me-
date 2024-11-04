@@ -24,9 +24,10 @@ public class OrderQueue{
     public OrderQueue() {}
     
     public void addOrder(Order order) {
-        insertionTimeMap.put(order, Instant.now());
+        insertionTimeMap.put(order, order.getTimestamp());
         orderQueue.add(order);
     }
+    
     
     public void viewOrders() {
         int i=1;
@@ -35,6 +36,7 @@ public class OrderQueue{
         System.out.println("-----ORDER QUEUE-----");
         while(!tempQueue.isEmpty()) {
             Order order = tempQueue.poll();
+            if(order.getOrderStatus().equals("DONE")) continue;
             System.out.print(i + ".NAME: " + order.getItem().getName() + " || QUANTITY: "
                     + order.getQuantity() + " || SPECIAL REQUEST: " + order.getSpecialRequest() + " || ORDER STATUS: " + order.getOrderStatus());
             if (order.getCustomer().getPriority() == 1) {

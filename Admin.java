@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.util.*;
 
 public class Admin extends User{
     Scanner scanner = new Scanner(System.in);
+    
     
     
     public Admin(String email, String password){
@@ -110,6 +108,7 @@ public class Admin extends User{
     
     public void removeItem(){
         int choice;
+        OrderQueue orderQ = new OrderQueue();
         while(true){
             viewItems();
             System.out.println("ENTER THE ITEM NUMBER YOU WANT TO REMOVE");
@@ -118,9 +117,16 @@ public class Admin extends User{
             choice--;
             Item.items.get(choice).printCNPA();
             System.out.println(" REMOVED SUCCESSFULLY");
+            System.out.println();
             Item.items.remove(Item.items.get(choice));
+            ArrayList<Order> replaced = new ArrayList<>(OrderQueue.orderQueue);
+            OrderQueue.orderQueue.clear();
+            for(Order order : replaced){
+                if(Item.items.contains(order.getItem())) orderQ.addOrder(order);
+                else order.setOrderStatus("DENIED");
+            }
         }
-    } //TO BE UPDATED LATER  VERY CRUCIAL JUST REMOVES FROM THE LIST NOT THE ORDER
+    }
  
     
     
@@ -170,9 +176,77 @@ public class Admin extends User{
         }
     }
     
-    public void canceledOrders(){
-    
+    public void processRefunds(){
+        ArrayList<Order> cancelledOrders = new ArrayList<>();
+        PriorityQueue<Order> orders = OrderQueue.orderQueue;
+        int i = 1;
+        for(Order order : orders){
+            if(order.getOrderStatus().equals("CANCELLED")){
+                System.out.print(i+".");
+                System.out.println(order);
+                cancelledOrders.add(order);
+            }
+        }
+        int choice;
+        while(true){
+            System.out.println("ENTER THE ITEM NUMBER TO PROCESS REFUND");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+            if(choice==-1) return;
+            choice--;
+            cancelledOrders.get(choice).setOrderStatus("REFUNDED");
+            System.out.println("---REFUNDED---");
+        }
+        
     }
+    
+    
+    
+    public void reportGeneration(){
+        HashMap<String, Integer> orderMap = new HashMap<>();
+        int max = 0;
+        int totalOders = 0;
+        ArrayList<String> maxStrings = new ArrayList<>();
+        int totalSales = 0;
+        ArrayList<Order> orders = new ArrayList<>(OrderQueue.orderQueue);
+        for(Order order : orders){
+            totalSales+=(order.getQuantity()*order.getItem().getPrice());
+            if(orderMap.containsKey(order.getItem().getName())){
+                int curr = orderMap.get(order.getItem().getName());
+                curr+=order.getQuantity();
+                orderMap.put(order.getItem().getName(), curr);
+            }
+            else{
+                orderMap.put(order.getItem().getName(), order.getQuantity());
+            }
+            totalOders++;
+        }
+        System.out.println("ITEM\t\tQUANTITY");
+        for (Map.Entry<String, Integer> entry : orderMap.entrySet()) {
+            int value = entry.getValue();
+            System.out.println(entry.getKey() + "\t\t" + value);
+            if(max<=value) {
+                if(max==value){
+                    maxStrings.add(entry.getKey());
+                }
+                else{
+                    maxStrings.clear();
+                    max=value;
+                    maxStrings.add(entry.getKey());
+                }
+            }
+        }
+        System.out.println();
+        System.out.println("TOTAL ORDERS: " + totalOders);
+        System.out.println("TOTAL SALES: " + totalSales);
+        System.out.print("MOST ORDERED: ");
+        for(String s : maxStrings){
+            System.out.print(s + ", ");
+        }
+        System.out.println();
+    }
+    
+    
     
     
 }

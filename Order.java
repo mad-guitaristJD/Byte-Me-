@@ -1,3 +1,4 @@
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -9,6 +10,7 @@ public class Order {
     private String orderStatus;
     private int priority;
     private int quantity;
+    private Instant timestamp;
     
     
     public Order(Customer customer, Item item, int quantity){
@@ -18,23 +20,17 @@ public class Order {
         priority = customer.getPriority();
         this.specialRequest = "NO SPECIAL REQUEST";
         this.orderStatus = "BOOKED";
+        this.timestamp = Instant.now();
     }
     
-    
-    public Order(Customer customer, Item item, String specialRequest, String orderStatus) {
+    public Order(Customer customer, Item item, int quantity, String specialRequest){
         this.customer = customer;
         this.item = item;
+        this.quantity = quantity;
+        priority = customer.getPriority();
         this.specialRequest = specialRequest;
-        this.orderStatus = orderStatus;
-        priority = customer.getPriority();
-    }
-    
-    public Order(Customer customer, Item item, String orderStatus) {
-        this.customer = customer;
-        this.item = item;
-        this.specialRequest = "NO SPECIAL REQUEST";
-        this.orderStatus = orderStatus;
-        priority = customer.getPriority();
+        this.orderStatus = "BOOKED";
+        this.timestamp = Instant.now();
     }
     
     public Customer getCustomer() {
@@ -61,12 +57,21 @@ public class Order {
         return quantity;
     }
     
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+    
     public void setOrderStatus(String status){
         this.orderStatus = status;
     }
     
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+    
+    @Override
+    public String toString() {
+        return "ITEM: " + getItem().getName() + " || QUANTITY: " + getQuantity() + " || STATUS: " + getOrderStatus();
     }
 }
 
