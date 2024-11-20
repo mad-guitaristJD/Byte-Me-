@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -12,11 +16,7 @@ public class Controller {
     Scanner scanner = new Scanner(System.in);
     
     public Controller(){
-        Regular regular1 = new Regular("1", "1");
-        Vip vip1 = new Vip("2", "2");
-        
-        regularCustomers.put("1", regular1);
-        vipCustomers.put("2", vip1);
+        loadUsers();
         
         //Initialization of few items
         Item.items.add(new Item("snacks", "samosa", 10));
@@ -26,14 +26,68 @@ public class Controller {
         Item.items.add(new Item("lunch", "thali", 60));
         Item.items.add(new Item("drinks", "cold drink", 40));
         
-        OrderQueue orderQueue = new OrderQueue();
-        orderQueue.addOrder(new Order(regular1, Item.items.getFirst(), 1));
-        orderQueue.addOrder(new Order(vip1, Item.items.get(5), 1));
-        orderQueue.addOrder(new Order(regular1, Item.items.get(2), 2));
-        orderQueue.addOrder(new Order(vip1, Item.items.getFirst(), 2));
-        orderQueue.addOrder(new Order(regular1, Item.items.get(3), 3));
+//        OrderQueue orderQueue = new OrderQueue();
+//        orderQueue.addOrder(new Order(regular1, Item.items.getFirst(), 1));
+//        orderQueue.addOrder(new Order(vip1, Item.items.get(5), 1));
+//        orderQueue.addOrder(new Order(regular1, Item.items.get(2), 2));
+//        orderQueue.addOrder(new Order(vip1, Item.items.getFirst(), 2));
+//        orderQueue.addOrder(new Order(regular1, Item.items.get(3), 3));
         
         
+    }
+    
+    private void loadUsers(){
+        try(BufferedReader br = new BufferedReader(new FileReader("users.txt"))){
+            String line;
+            while((line = br.readLine()) !=null){
+                String[] parts = line.split(",");
+                if(parts[0].equals("VIP")){
+                    if(!vipCustomers.containsKey(parts[1])){
+                        vipCustomers.put(parts[1], new Vip(parts[1], parts[2]));
+                    }
+                }
+                else if(parts[0].equals("REGULAR")){
+                    if(!regularCustomers.containsKey(parts[1])){
+                        regularCustomers.put(parts[1], new Regular(parts[1], parts[2]));
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            System.out.println("SOME EXCEPTION OCCURRED");
+        }
+    }
+    
+    private void addUser(User user, String type){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt", true))){
+            bw.write(type + "," + user.getEmail() + "," + user.getPassword());
+            bw.newLine();
+        }
+        catch (Exception e){
+            System.out.println("SOME EXCEPTION OCCURRED");
+        }
+        
+    }
+    
+    public void register(){
+        String email;
+        System.out.println("ENTER EMAIL: ");
+        email = scanner.nextLine();
+        String password;
+        System.out.println("ENTER PASSWORD: ");
+        password = scanner.nextLine();
+        System.out.println("CHOOSE\n1.VIP (PRIORITY ORDER)\n2.REGULAR");
+        int choice = scanner.nextInt();
+        if(choice==1){
+            Vip vip = new Vip(email, password);
+            addUser(vip, "VIP");
+        }
+        else if(choice==2){
+            Regular regular = new Regular(email, password);
+            addUser(regular, "REGULAR");
+        }
+        System.out.println("-----REGISTERED-----");
+        loadUsers();
     }
     
     public void login(){

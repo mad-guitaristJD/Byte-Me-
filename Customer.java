@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public abstract class Customer extends User{
@@ -267,10 +270,25 @@ public abstract class Customer extends User{
     }
     
     public void viewOldOrders(){
+        
+        
         if(oldOrders.isEmpty()){
             System.out.println("NO HISTORY");
             return;
         }
+        String fileName = email + ".txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            for (Order order : oldOrders) {
+                writer.write(("ITEM: " + order.getItem().getName() + " || STATUS: " + order.getOrderStatus()));
+                writer.newLine();
+                writer.write("ORDERED TIME: " + order.getTimestamp());
+                writer.newLine();
+            }
+            System.out.println("ArrayList items successfully written to " + fileName);
+        } catch (IOException e) {
+            System.err.println("An error occurred while writing to the file: " + e.getMessage());
+        }
+        
         int i=1, choice;
         for(Order order : oldOrders){
             System.out.println(i + ". ITEM: " + order.getItem().getName() + " || STATUS: " + order.getOrderStatus());

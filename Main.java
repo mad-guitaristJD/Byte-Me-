@@ -7,13 +7,16 @@ public class Main {
         System.out.println("--------ByteMe--------");
         System.out.println();
         while(true){
-//            try{
                 System.out.println("1.TO ENTER :) \n2.EXIT :( ");
                 int choice;
                 choice = scanner.nextInt();
                 
                 if(choice==1){
-                    controller.login();
+                    System.out.println("1.REGISTER\n2.LOGIN");
+                    choice = scanner.nextInt();
+//                    scanner.next();
+                    if(choice==1) controller.register();
+                    else if(choice==2) controller.login();
                 }
                 else if(choice==2 || choice == -1){
                     break;
@@ -21,11 +24,6 @@ public class Main {
                 else{
                     System.out.println("NOT A VALID CHOICE");
                 }
-//            }
-//            catch (Exception e){
-//                System.out.println("ENTER A VALID CHOICE");
-//                scanner.nextLine();
-//            }
         }
     }
 }
