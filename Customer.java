@@ -154,6 +154,10 @@ public abstract class Customer extends User{
             scanner.nextLine();
             if(choice==-1) break;
             choice--;
+            if(!items.get(choice).isAvailable()){
+                System.out.println("ITEM NOT AVAILABLE");
+                break;
+            }
             System.out.println("ENTER QUANTITY");
             quantity = scanner.nextInt();
             scanner.nextLine();
@@ -338,7 +342,34 @@ public abstract class Customer extends User{
     }
     
     
-    
+    public void addOrder(Scanner scanner){
+        viewItems();
+        ArrayList<Item> items = Item.items;
+        int choice=0, quantity=1;
+        while(true){
+            System.out.println("ENTER THE ITEM NUMBER");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+            if(choice==-1) break;
+            choice--;
+            if(!items.get(choice).isAvailable()){
+                System.out.println("ITEM NOT AVAILABLE");
+                break;
+            }
+            System.out.println("ENTER QUANTITY");
+            quantity = scanner.nextInt();
+            scanner.nextLine();
+            String specialRequest="";
+            System.out.println("TYPE SPECIAL REQUEST\n-1 IF NONE");
+            specialRequest = scanner.nextLine();
+            if(specialRequest.equals("-1")) cart.add(new Order(this, items.get(choice),  quantity));
+            else cart.add(new Order(this, items.get(choice),  quantity, specialRequest));
+        }
+        System.out.println("ADDED ITEMS");
+        for(Order order : cart){
+            System.out.println("ITEM: " + order.getItem().getName() + " || Quantity: " + order.getQuantity());
+        }
+    }
     public abstract void showType();
     
 }

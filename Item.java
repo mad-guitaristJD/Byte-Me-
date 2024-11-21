@@ -17,7 +17,12 @@ public class Item {
     }
     
     
-    
+    public Item(String category, String name, int price, boolean availability){
+        this.category = category;
+        this.name = name;
+        this.price = price;
+        this.availability = availability;
+    }
     
     public void setName(String name) {
         this.name = name;

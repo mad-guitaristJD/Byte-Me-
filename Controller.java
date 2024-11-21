@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Controller {
-    private User user = null;
+    protected User user = null;
     private Map<String, Regular> regularCustomers = new HashMap<>();
     private Map<String, Vip> vipCustomers = new HashMap<>();
     private final String adminEmail = "admin";
@@ -20,7 +20,7 @@ public class Controller {
         
         //Initialization of few items
         Item.items.add(new Item("snacks", "samosa", 10));
-        Item.items.add(new Item("snacks", "patty", 20));
+        Item.items.add(new Item("snacks", "patty", 20, false));
         Item.items.add(new Item("snacks", "burger", 30));
         Item.items.add(new Item("lunch", "special thali", 70));
         Item.items.add(new Item("lunch", "thali", 60));
@@ -34,6 +34,14 @@ public class Controller {
 //        orderQueue.addOrder(new Order(regular1, Item.items.get(3), 3));
         
         
+    }
+    
+    public Map<String, Regular> getRegularCustomers() {
+        return regularCustomers;
+    }
+    
+    public Map<String, Vip> getVipCustomers() {
+        return vipCustomers;
     }
     
     private void loadUsers(){
@@ -123,7 +131,9 @@ public class Controller {
         }
     }
     
+    
     public boolean loginCustomer(){
+        Scanner scanner = new Scanner(System.in);
         System.out.println("ENTER EMAIL");
         String email = scanner.nextLine();
         System.out.println("ENTER PASSWORD");
@@ -319,5 +329,46 @@ public class Controller {
         }
     }
     
+    
+    public void login(boolean forTest, Scanner scanner){
+        int choice;
+        System.out.println("1.LOGIN AS CUSTOMER\n2.LOGIN AS ADMIN");
+        System.out.println("yes");
+        choice = scanner.nextInt();
+        scanner.next();
+        if(choice==-1){
+            return;
+        }
+        if(choice==1){
+            if(!loginCustomer(scanner)){
+                System.out.println("INVALID LOGIN");
+            }
+            else{
+                System.out.println("LOGIN SUCCESSFUL");
+            }
+        }
+        else{
+            System.out.println("ENTER A VALID OPTION");
+        }
+    }
+    
+    public boolean loginCustomer(Scanner scanner){
+        System.out.println("ENTER EMAIL");
+        String email = scanner.nextLine();
+        System.out.println("ENTER PASSWORD");
+        String password = scanner.nextLine();
+        Customer customer = regularCustomers.get(email);
+        if(customer!=null && customer.getPassword().equals(password)){
+            user = regularCustomers.get(email);
+            return true;
+        }
+        customer = vipCustomers.get(email);
+        if(customer!=null && customer.getPassword().equals(password)){
+            System.out.println("*****VIP MEMBER*****");
+            user = vipCustomers.get(email);
+            return true;
+        }
+        return false;
+    }
     
 }
