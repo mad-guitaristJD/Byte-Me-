@@ -17,7 +17,8 @@ public class Controller {
     
     public Controller(){
         loadUsers();
-        
+        Regular regular1 = regularCustomers.get("regularUser");
+        Vip vip1 = vipCustomers.get("vipUser");
         //Initialization of few items
         Item.items.add(new Item("snacks", "samosa", 10));
         Item.items.add(new Item("snacks", "patty", 20, false));
@@ -26,12 +27,12 @@ public class Controller {
         Item.items.add(new Item("lunch", "thali", 60));
         Item.items.add(new Item("drinks", "cold drink", 40));
         
-//        OrderQueue orderQueue = new OrderQueue();
-//        orderQueue.addOrder(new Order(regular1, Item.items.getFirst(), 1));
-//        orderQueue.addOrder(new Order(vip1, Item.items.get(5), 1));
-//        orderQueue.addOrder(new Order(regular1, Item.items.get(2), 2));
-//        orderQueue.addOrder(new Order(vip1, Item.items.getFirst(), 2));
-//        orderQueue.addOrder(new Order(regular1, Item.items.get(3), 3));
+        OrderQueue orderQueue = new OrderQueue();
+        orderQueue.addOrder(new Order(regular1, Item.items.getFirst(), 1));
+        orderQueue.addOrder(new Order(vip1, Item.items.get(5), 1));
+        orderQueue.addOrder(new Order(regular1, Item.items.get(2), 2));
+        orderQueue.addOrder(new Order(vip1, Item.items.getFirst(), 2));
+        orderQueue.addOrder(new Order(regular1, Item.items.get(3), 3));
         
         
     }
@@ -333,7 +334,6 @@ public class Controller {
     public void login(boolean forTest, Scanner scanner){
         int choice;
         System.out.println("1.LOGIN AS CUSTOMER\n2.LOGIN AS ADMIN");
-        System.out.println("yes");
         choice = scanner.nextInt();
         scanner.next();
         if(choice==-1){

@@ -1,3 +1,8 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Admin extends User{
@@ -14,6 +19,40 @@ public class Admin extends User{
             System.out.println("NO ITEMS IN THE MENU");
             return;
         }
+        JFrame frame = new JFrame("Items Menu");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setLayout(new BorderLayout());
+        
+        String[] columnNames = {"Category", "Name", "Price", "Availability"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        
+        for (Item item : Item.items) {
+            String availability = item.isAvailable() ? "YES :)" : "NO :(";
+            tableModel.addRow(new Object[]{item.getCategory(), item.getName(), item.getPrice(), availability});
+        }
+        
+        JTable table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        
+        JButton addButton = new JButton("View Pending Orders");
+        
+        addButton.addActionListener(e -> {
+            frame.dispose();
+            viewOrdersGUI();
+            viewOrders();
+        });
+        
+        buttonPanel.add(addButton);
+        
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        
+        
+        frame.setVisible(true);
         int i=1;
         for(Item item : Item.items){
             System.out.print(i + ".CATEGORY: " + item.getCategory() + " || NAME: " + item.getName() + " || PRICE: " + item.getPrice() + " || AVAILABLE: ");
@@ -130,6 +169,54 @@ public class Admin extends User{
  
     
     
+    public void viewOrdersGUI(){
+        JFrame frame = new JFrame("Pending Orders");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(800, 400);
+        frame.setLayout(new BorderLayout());
+        
+        String[] columnNames = {"Name", "Quantity", "Special Request", "Order Status", "Order Time"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss.SSSSS dd-MM-yyyy").withZone(ZoneId.systemDefault());
+        PriorityQueue<Order> tempQueue = new PriorityQueue<>(OrderQueue.orderQueue);
+        
+        while (!tempQueue.isEmpty()) {
+            Order order = tempQueue.poll();
+            if (order.getOrderStatus().equals("DONE")) continue;
+            
+            String priority = order.getCustomer().getPriority() == 1 ? "**(VIP)**" : "";
+            String orderTime = formatter.format(OrderQueue.insertionTimeMap.get(order));
+            tableModel.addRow(new Object[]{
+                    order.getItem().getName(),
+                    order.getQuantity(),
+                    order.getSpecialRequest(),
+                    order.getOrderStatus() + " " + priority,
+                    orderTime
+            });
+        }
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        
+        JButton button = new JButton("Back");
+        buttonPanel.add(button);
+        
+        button.addActionListener(e -> {
+            frame.dispose();
+            viewItems();
+        });
+        
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        JTable table = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        
+        
+        
+        
+        frame.setVisible(true);
+    }
     
     public void viewOrders(){
         OrderQueue orderQueue = new OrderQueue();
